@@ -1,0 +1,84 @@
+{% extends "organization/read_base.html" %}
+
+{% set org_meta = org_meta or c.org_meta %}
+{% set org_dict = org_dict or org_meta.org_dict or c.group_dict %}
+{% set allow_req_membership = org_dict.allow_req_membership if 'allow_req_membership' in org_dict else org_meta.allow_req_membership %}
+
+{# The lines below are for analytics #}
+{% block analytics_org_name %}{{ org_dict.name }}{% endblock %}
+{% block analytics_org_id %}{{ org_dict.id }}{% endblock %}
+
+{% set can_create_dataset = h.check_access('package_create', {'organization_id': org_dict.id, 'owner_org': org_dict.id}) %}
+{% set can_edit = h.check_access('organization_update', {'id': org_dict.id}) %}
+{% set can_actions = can_create_dataset or can_edit %}
+
+{% set page_has_mobile_version = True %}
+
+{% block item_title_contrib %}
+	<div>
+		<ul style="list-style: none; padding: 0;" class="mTop40">
+			{% snippet 'browse/snippets/org_item_read.html', organization=org_dict %}
+		</ul>
+	</div>
+	<div class="row mTop20">
+		<div class="col-xs-12">
+			{% snippet "organization/snippets/org_actions_menu.html", request_membership=allow_req_membership, organization=org_dict, can_create_dataset=can_create_dataset, can_edit=can_edit, classes='base-actions-menu followButtonContainer pull-right' %}
+		</div>
+	</div>
+{% endblock %}
+
+{% block page_header %}
+<div>
+	<header class="module-content page-header paddingRowHack mTop20 mBottom10">
+		<ul class="nav nav-tabs paddingLeftHack paddingRightHack">
+		   {% block content_primary_nav %}
+			   	{{ h.build_nav_icon('hdx_org.read', _('Datasets'), id=org_dict.name, class_='hdx-tab-button') }}
+			   	{{ h.build_nav_icon('hdx_org.activity', _('Activity Stream'), id=org_dict.name, class_='hdx-tab-button') }}
+				{% if c.user %}
+					{{ h.build_nav_icon('hdx_members.members', _('Members'), id=org_dict.name, class_='hdx-tab-button') }}
+				{% endif %}
+				{% if h.check_access('organization_update', {'id': org_dict.id}) %}
+				  {{ h.build_nav_icon('requestdata_organization_requests.requested_data', _('Requested Data'), id=org_dict.name) }}
+				{% endif %}
+			   	{{ h.build_nav_icon('hdx_org.stats', _('Stats'), id=org_dict.name, class_='hdx-tab-button') }}
+		   {% endblock %}
+		</ul>
+	</header>
+</div>
+{% endblock %}
+
+
+{% block page_primary_action %}
+{% endblock %}
+
+{% block primary_content_inner %}
+	{% block package_notes %}
+    {% endblock %}
+    {% block groups_search_form %}
+	{% endblock %}
+
+	{% block packages_list %}
+      {% if org_dict.search_template_data.page.items %}
+		<div>
+			{% snippet 'search/snippets/search_results_wrapper.html', tracking_enabled=g.tracking_enabled, my_c=org_dict.search_template_data %}
+		</div>
+  	  {% else %}
+        <div>
+		  	<div class="big-message">
+			    <p>
+			      {{ _('There are no datasets currently uploaded to this organisation.') }}
+			    </p>
+			    <p>
+			      {% if h.check_access('package_create', {'organization_id': org_dict.id, 'owner_org': org_dict.id}) %}
+				  		<a href="javascript:void(0);" onclick="contributeAddDetails(null, 'empty org');" class="add-data">Add Data</a>
+				  {% endif %}
+			    </p>
+		    </div>
+		</div>
+      {% endif %}
+    {% endblock %}
+  {% block page_pagination %}
+  {% endblock %}
+{% endblock %}
+
+{% block secondary %}{% endblock %}

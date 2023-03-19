@@ -1,0 +1,10 @@
+{% extends "package/snippets/base_actions_menu.html" %}
+
+
+{% block user_actions %}
+    {% if h.check_access('ckanext_showcase_update', {'id':pkg.id }) %}
+        <li>
+            {% link_for _('Edit showcase'), named_route='showcase_blueprint.edit', id=pkg.name, class_='' %}
+        </li>
+    {% endif %}
+{% endblock %}

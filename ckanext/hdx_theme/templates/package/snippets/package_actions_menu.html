@@ -1,0 +1,32 @@
+{% extends "package/snippets/base_actions_menu.html" %}
+
+{% set panel_title = _('Share Indicator') if is_indicator else _('Share Dataset') %}
+{% set title = pkg.title %}
+{% set contact_topics = membership.data.contributor_topics %}
+{% set membership = membership %}
+{% set group_topics = membership.data.group_topics %}
+
+{% set base_type = "dataset" %}
+{% set base_title = base_type %}
+{% set org_id = pkg.owner_org %}
+{% set pkg_id = pkg.name or pkg.id %}
+{% set follow_id = pkg_id %}
+{% set plain_body = pkg.social_mail_body %}
+
+{% block user_actions %}
+    {% if h.check_access('package_update', {'id':pkg.id }) %}
+        <li class="hide-text">
+            <a title="Edit {{ base_type | capitalize }}" class="contribute-popup-init" dataset-id="{{pkg.id}}" onclick="contributeAddDetails('{{ pkg.id }}', 'dataset')"
+                href="#" data-module="bs_tooltip" data-module-placement="top" data-toggle="tooltip" data-delay='{"show":"700"}' >
+                <i class="icon-edit"></i>
+                <span>{{ _('Edit') }}</span>
+            </a>
+        </li>
+    {% endif %}
+    {% if (h.check_access('package_delete', {'id':pkg.id }) )and (not pkg.get('state', '').startswith('deleted')) %}
+        <li class="delete-override hide-text">
+            {% snippet 'snippets/delete_dataset.html', pkg=pkg, button=False, icon="icon-rubbish-bin" %}
+        </li>
+    {% endif %}
+
+{% endblock %}

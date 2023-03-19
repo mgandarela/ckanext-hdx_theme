@@ -1,0 +1,95 @@
+@import "variables";
+
+@bodyBackgroundColor: @greenColor;
+@bodyBackgroundUrl: "@{imagePath}/homepage/map.png";
+
+/* Default link style */
+    a, .dataset-heading a, a.test {
+        color: @defaultLinkColor;
+        text-decoration: none;
+        &:hover, &:focus {
+            color: darken(@defaultLinkColor, 20%);
+            text-decoration: none;
+        }
+    }
+/* END Default link style */
+
+/* Body Background */
+    body {
+      background-size: cover;
+      background: @bodyBackgroundColor;
+      min-width: 1260px;
+      color: @grayColor;
+      font-family: @sourceSansProFont;
+    }
+/* END Body Background */
+
+h1 {
+  font-size: 28px;
+}
+h2 {
+  font-size: 21px;
+}
+h3 {
+  font-size: 18px;
+}
+h4 {
+  font-size: 14px;
+}
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.5;
+}
+h1 small,
+h2 small,
+h3 small,
+h4 small {
+  font-size: 14px;
+}
+
+/* Style Caret */
+.caret{
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-top: 9px solid @defaultLinkColor;
+    //vertical-align: top;
+}
+
+.dropup {
+  .caret {
+    border-bottom: 9px solid @defaultLinkColor;
+  }
+}
+/* END Style Caret */
+
+/* Change the default style for ul items */
+    ul.hdx-bs3 {
+        padding-left: 0;
+        list-style-type: none;
+    }
+
+    /* Style pagination */
+        .pagination {
+          display: flex;
+          justify-content: center;
+          text-align: center;
+          height: @containerMarginSize;
+
+          > li {
+            &:first-child, &:last-child {
+              a {
+                border-radius: 0;
+              }
+            }
+          }
+        }
+    /* END Style pagination */
+/* END Change the default style for ul items */
+
+/* Actions button list */
+.actions li {
+  display: inline-block;
+}
+/* END - Actions button list */

@@ -1,0 +1,71 @@
+//Paths
+@generalPath: ""; //for override purposes eg. "/assets"
+@imagePath: "@{generalPath}/images";
+@fontsPath: "@{generalPath}/fonts";
+
+//Extra Colors
+@wfpBlueColor: #0088FF;
+
+//Base Colors
+@whiteColor: #fff;
+@barelyVisibleGrayColor: #fafafa;
+@extraLightGrayColor: #eeeeee;
+@extraLightGrayAccent: #ddd;
+@lightGrayColor: #cccccc;
+@grayColor: #888888;
+@darkGrayColor: #333333;
+@blackColor: #000;
+
+@greenColor: #1ebfb3;
+@freshGreenColor: #1bb580;
+@lightGreenColor: lighten(@greenColor, 40%);
+@blueColor: #007CE0;
+@extraLightBlueColor: #edf6fd;
+@extraLightBeigeColor: #fefbed;
+@orangeColor: #f2645a;
+@lightOrangeColor: lighten(@orangeColor, 15%);
+@extraLightOrangeColor: lighten(@orangeColor, 30%);
+
+@redColor: #ff0000;
+@lightRedColor: #F2645A;
+
+@defaultLinkColor: @blueColor;
+
+//Fonts
+@gothamBoldFont: 'Gotham-Bold', sans-serif;
+@gothamBookFont: 'Gotham-Book', sans-serif;
+@gothamLightFont: 'Gotham-Light', sans-serif;
+@gothamMediumFont: 'Gotham-Medium', sans-serif;
+@sourceSansProFont: 'Source Sans Pro', sans-serif;
+//global header font
+@helveticaFont: helvetica,arial,sans-serif;
+
+//Others
+@navBorderHeight: 3px;
+
+@gutterSize: 30px;
+@gutterSmallSize: @gutterSize/2;
+
+@containerSize: 1200px; //container size;
+@containerRealSize: @containerSize - @gutterSize; //real container size (no gutter)
+@containerMarginSize: 45px; //left/right margin set larger than gutter by design so content width will be 1260px
+@bodySize: @containerRealSize + 2*@containerMarginSize;
+
+@paginationActiveBackground: @greenColor;
+@paginationItemSize: 45px;
+
+@formSectionPadding: 30px 0;
+
+//header
+@headerNavHeight: 57px;
+@global-header-height: 35px;
+
+//responsive cutpoints
+@cut-point-mobile-s: 320px;
+@cut-point-mobile-m: 375px;
+@cut-point-mobile-l: 425px;
+@cut-point-tablet: 768px;
+@cut-point-laptop-s: 1024px;
+@cut-point-laptop-m: 1200px;
+@cut-point-desktop: @bodySize;
+

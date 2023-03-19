@@ -1,0 +1,75 @@
+{#
+Displays a single dataset of type 'showcase'.
+
+package        - A package to display.
+item_class     - The class name to use on the list item.
+truncate       - The length to trucate the description to (default: 180)
+truncate_title - The length to truncate the title to (default: 80).
+
+#}
+{% set truncate = truncate or 140 %}
+{% set truncate_title = truncate_title or 25 %}
+{% set title = package.title or package.name %}
+{% set notes = h.markdown_extract(package.notes, extract_length=truncate) %}
+
+{% set url = package.url or h.url_for('showcase_blueprint.read', id=package.name) %}
+{% set has_url = package.url or False %}
+
+{% block package_item %}
+{% set img_url = package.image_display_url or package.img_url %}
+<div class="{% if dataset %} col-xs-12 {% else %} col-xs-3 {% endif %}">
+
+    <div class="showcase-item">
+      <a href="{{url}}" {% if has_url %} target="_blank" {% endif %}>
+        <div class="showcase-image">
+        {% if img_url %}
+          <img class="lazyload" data-src="{{ img_url }}" alt="{{ package.name }}">
+        {% else %}
+          <div class="img-placeholder">
+            <span class="img-placeholder-text"></span>
+          </div>
+        {% endif %}
+        </div>
+        <div class="title">
+          {{ h.truncate(title, truncate_title) }}
+        </div>
+      </a>
+      <div class="description">
+        {% if notes %}
+          {{ notes|urlize }}
+        {% else %}
+          {{ _("This showcase has no description") }}
+        {% endif %}
+      </div>
+
+      <a href="{{ h.url_for('showcase_blueprint.read', id=package.name) }}">
+        {% if package.num_datasets %}
+          <div><strong class="count count-zero">{{ ungettext('{num} Dataset', '{num} Datasets', package.num_datasets).format(num=package.num_datasets) }}</strong></div>
+        {% elif package.num_datasets == 0 %}
+          <div><strong class="count count-zero">{{ _('0 Datasets') }}</strong></div>
+        {% endif %}
+      </a>
+
+      <div class="showcase-hover" style="display: none;">
+        <div class="showcase-hover-content">
+          <div>
+            <a href="{{ h.url_for('showcase_blueprint.read', id=package.name) }}"
+               class="btn btn-empty-white">Read more</a>
+          </div>
+          <div style="margin-top: 14px;">
+            <a href="{{url}}" {% if has_url %} target="_blank" {% endif %} class="btn btn-empty-white">
+              Visit external site <i class="icon humanitarianicons-Out-of-platform"></i>
+            </a>
+          </div>
+          {% if h.check_access('ckanext_showcase_update', package) %}
+            <div style="margin-top: 14px;">
+              {% link_for _('Edit Showcase'), named_route='showcase_blueprint.edit', id=package.name, class_='white-link' %}
+            </div>
+          {% endif %}
+
+        </div>
+
+      </div>
+    </div>
+</div>
+{% endblock %}

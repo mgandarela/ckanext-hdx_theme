@@ -1,0 +1,37 @@
+{#
+Done widget
+
+Depends on:
+    Fanstatic resource bundle "popup"
+
+Example:
+    {{ h.snippet('widget/onboarding/done.html', id="donePopup") }}
+#}
+{#{% resource 'hdx_theme/widget/onboarding/survey.css' %}#}
+{% asset 'hdx_theme/onboarding-survey-styles' %}
+
+{% set class = "popup-onbording" %}
+{% set title = "HDX Data Use Survey" %}
+
+{% extends "widget/onboarding/notification.html" %}
+
+{% block notification_content %}
+  <div class="survey-widget">
+    <div class="survey-content">
+      <div class="center">
+      <div style="text-align: justify;">
+        {% set org_name = pkg.organization.title or pkg.organization.name %}
+        Please take 30 seconds to help HDX {% if  org_name != 'HDX' %}and {{ pkg.organization.title or pkg.organization.name}}{% endif %} understand your interest in this data.
+      </div>
+    </div>
+      <div class="right-side-actions">
+        <div id="dataUseSurveyPkgId" style="visibility:hidden;position:absolute;">{{ pkg.id }}</div>
+        <div id="dataUseSurveyPkgUrl" style="visibility:hidden;position:absolute;">{{ h.url_for('dataset.read', id=pkg.name, qualified='true') }}</div>
+        <div id="dataUseSurveyOrgName" style="visibility:hidden;position:absolute;">{{ pkg.organization.name }}</div>
+        <input class="btn btn-empty btn-empty-black btn-large pull-left" type="button" onclick="closeCurrentWidget(this);" value="Not now">
+        <a href="#"  class="mL35 btn btn-primary btn-primary-small btn-large pull-right" type="button" value="Take survey">Take the survey</a>
+      </div>
+    </div>
+    <iframe style="display: none;"></iframe>
+  </div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "page_light.html" %}
+{%- block styles %}
+  {{ super() }}
+  {% asset 'hdx_theme/dataset-search-scripts' %}
+  {% asset 'hdx_theme/dataset-styles' %}
+  {% asset 'hdx_theme/search-light-styles' %}
+{% endblock -%}
+
+{% block links %}
+  <link rel="canonical" href="{{ h.hdx_switch_url_path(force=False) }}">
+  {{ super() }}
+{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{{ h.nav_link(_('Datasets'), 'hdx_light_dataset.search') }}</li>
+{% endblock %}
+
+{% block content %}
+
+  {% snippet "light/snippets/package_list.html", data=data %}
+  {% snippet "widget/banner/hdx-light-banner.html", pkg=pkg %}
+{% endblock %}
+
+{%- block scripts %}
+  {{ super() }}
+  {% asset 'hdx_theme/search-scripts' %}
+  {% asset 'hdx_theme/dataset-search-scripts' %}
+  {% asset 'hdx_theme/dataset-scripts' %}
+
+{% endblock -%}

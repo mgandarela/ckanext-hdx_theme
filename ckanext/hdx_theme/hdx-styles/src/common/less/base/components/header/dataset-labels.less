@@ -1,0 +1,427 @@
+@import "../../variables";
+@import "../../mixins";
+
+@baseImagePath: "/base/images";
+@formatMediumX: 32px;
+@formatMediumY: 35px;
+@formatMediumOffsetX: -@formatMediumX;
+@formatMediumOffsetY: -62px;
+@resourceIconX: 60px;
+@resourceIconY: 65px;
+@resourceIconOffsetX: -20px;
+@resourceIconOffsetY: -220px;
+
+.ckan-icon {
+  //.ie7-restore-right-whitespace;
+  display: inline-block;
+  vertical-align: text-bottom;
+  position: relative;
+  top: 2px;
+  width: 16px;
+  height: 16px;
+  background-image: url("@{baseImagePath}/sprite-ckan-icons.png");
+  background-repeat: no-repeat;
+  background-position: 16px 16px;
+}
+
+.ckan-icon-background-position(@offset, @size) {
+  @w: "@{size}X";
+  @h: "@{size}Y";
+  @x: "@{size}OffsetX";
+  @y: "@{size}OffsetY";
+  width: @@w;
+  height: @@h;
+  background-position: (@@x * @offset) @@y;
+}
+
+.ckan-resource-icon-bg-pos(@offset, @size) {
+  @w: "@{size}X";
+  @h: "@{size}Y";
+  @x: "@{size}OffsetX";
+  @y: "@{size}OffsetY";
+  width: @@w;
+  height: @@h;
+  background-position: (@@x + -100*@offset) @@y;
+  transform: scale(0.53);
+  margin: -14px 0 0 -14px;
+}
+
+
+/* Style dataset labels */
+.dataset-resources {
+    margin-top: 8px;
+    padding: 0;
+    li {
+      display: inline;
+      & ~ li {
+        margin-left: 3px;
+      }
+    }
+
+    [class^="icon-"], [class*=" icon-"] {
+        display: inline-block;
+        &:before {
+            color: @grayColor;
+        }
+        font-size: 16px;
+    }
+
+}
+
+/* Style dataset icons */
+.label-icons span{
+  font-size: 15px;
+  color: @grayColor;
+  margin-left: 10px;
+  padding-top: 3px;
+
+  &.download-counts {
+    font-size: 12px;
+    white-space: nowrap;
+  }
+}
+
+span.icn-txt-cods, ul.dataset-resources li.label-icons span.icn-txt-cods{
+  .gothamBoldFont(10px);
+  background-color: @grayColor;
+  color: @whiteColor;
+  padding: 4px;
+  border-radius: 10px;
+  line-height: 1;
+  display: inline-block;
+  &:hover {
+    background-color: @blueColor;
+  }
+}
+.dataset-content .icn-txt-cods {
+  margin-right: 5px;
+  display: inline-block;
+}
+
+ul.dataset-resources {
+  display: flex;
+  li.label-icons {
+    display: flex;
+    align-items: center;
+    a {
+      line-height: 1;
+      &[class*="humanitarianicons-"] {
+        margin-left: 10px;
+      }
+    }
+    span {
+      padding: 0;
+    }
+  }
+}
+
+ul.dataset-resources li + li.label-icons {
+  border-left: 1px solid #888888;
+  margin-left: 10px;
+  white-space: nowrap;
+}
+
+/* END Style dataset icons */
+
+/* Label style (eg. tags) */
+
+.label{
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  color: #FFFFFF;
+  background-color: #aaaaaa;
+  display: inline-block;
+  margin-right: 6px;
+  margin-bottom: 4px;
+  padding: 3px 10px;
+  text-transform: uppercase;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  min-width: 0;
+  vertical-align: middle;
+}
+
+.label.label-small{
+  font-family: 'Gotham-Bold', sans-serif;
+  font-weight: 400;
+  font-size: 9px;
+  letter-spacing: 0.01em;
+  line-height: 16px;
+  margin-right: 0;
+  padding: 0 5px;
+  margin-bottom: 3px;
+  &.label-new-feature {
+    background-color: @lightRedColor;
+  }
+}
+
+  /* Pill styling - seem to be the similar to labels, but gray and with a button*/
+  .pill {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: #ffffff;
+    text-transform: uppercase;
+
+    padding: 5px 15px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    display: inline-block;
+
+    background-color: #888888;
+    border-radius: 0;
+  }
+
+  .pill .icon-remove, .pill .humanitarianicons-Exit-Cancel {
+    cursor: pointer;
+    margin-left: 20px;
+
+  }
+/* END Pill styling */
+
+/* END Label style */
+
+
+.label[data-format=html],
+.label[data-format*=html] {
+  background-color: #55a1ce;
+}
+
+.label[data-format=json],
+.label[data-format*=json] {
+  background-color: #ef7100;
+}
+
+.label[data-format=xml],
+.label[data-format*=xml] {
+  background-color: #ef7100;
+}
+
+.label[data-format=text],
+.label[data-format*=text] {
+  background-color: #74cbec;
+}
+
+.label[data-format=csv],
+.label[data-format*=csv],
+.label[data-format=xls],
+.label[data-format*=xls] {
+  background-color: #2db55d;
+}
+
+.label[data-format=zip],
+.label[data-format*=zip] {
+  background-color: #686868;
+}
+
+.label[data-format=api],
+.label[data-format*=api] {
+  background-color: #ec96be;
+}
+
+.label[data-format=pdf],
+.label[data-format*=pdf] {
+  background-color: #e0051e;
+}
+
+.label[data-format=rdf],
+.label[data-format*=rdf],
+.label[data-format*=nquad],
+.label[data-format*=ntriples],
+.label[data-format*=turtle] {
+  background-color: #0b4498;
+}
+/* END Style dataset labels */
+
+
+.resource-item{
+  position: relative;
+  padding: 10px 10px 10px 60px;
+  margin-bottom: 0px;
+
+  .format-label {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+  }
+
+  .under-review {
+    color: @orangeColor;
+    .gothamBoldFont(12px);
+    text-transform: uppercase;
+
+
+    &.btn {
+      color: @darkGrayColor;
+      border-color: @darkGrayColor;
+      opacity: (.65);
+      cursor: help;
+      text-align: center;
+
+        &:hover, &:focus {
+          color: @darkGrayColor;
+          border-color: @darkGrayColor;
+        }
+    }
+  }
+}
+
+.format-label {
+  .ckan-icon;
+
+  text-indent: -900em;
+  background: url("@{baseImagePath}/sprite-resource-icons.png") no-repeat 0 0;
+}
+
+.format-label {
+    .ckan-resource-icon-bg-pos(17,
+    "resourceIcon");
+}
+
+.format-label[data-format=html],
+.format-label[data-format*=html] {
+    .ckan-resource-icon-bg-pos(1,
+    "resourceIcon");
+}
+
+.format-label[data-format=json],
+.format-label[data-format*=json] {
+    .ckan-resource-icon-bg-pos(2,
+    "resourceIcon");
+}
+
+.format-label[data-format=xml],
+.format-label[data-format*=xml] {
+    .ckan-resource-icon-bg-pos(3,
+    "resourceIcon");
+}
+
+.format-label[data-format=txt],
+.format-label[data-format*=txt] {
+    .ckan-resource-icon-bg-pos(4,
+    "resourceIcon");
+}
+
+.format-label[data-format=doc],
+.format-label[data-format*=doc],
+.format-label[data-format=docx],
+.format-label[data-format*=docx] {
+    .ckan-resource-icon-bg-pos(5,
+    "resourceIcon");
+}
+
+.format-label[data-format=odt],
+.format-label[data-format*=odt] {
+    .ckan-resource-icon-bg-pos(6,
+    "resourceIcon");
+}
+
+.format-label[data-format=csv],
+.format-label[data-format*=csv] {
+    .ckan-resource-icon-bg-pos(7,
+    "resourceIcon");
+}
+
+.format-label[data-format=xls],
+.format-label[data-format*=xls] {
+    .ckan-resource-icon-bg-pos(8,
+    "resourceIcon");
+}
+
+.format-label[data-format=zip],
+.format-label[data-format*=zip] {
+    .ckan-resource-icon-bg-pos(9,
+    "resourceIcon");
+}
+
+.format-label[data-format=api],
+.format-label[data-format*=api] {
+    .ckan-resource-icon-bg-pos(10,
+    "resourceIcon");
+}
+
+.format-label[data-format=pdf],
+.format-label[data-format*=pdf] {
+    .ckan-resource-icon-bg-pos(11,
+    "resourceIcon");
+}
+
+.format-label[data-format=rdf],
+.format-label[data-format*=rdf] {
+    .ckan-resource-icon-bg-pos(12,
+    "resourceIcon");
+}
+
+.format-label[data-format=wms],
+.format-label[data-format*=wms] {
+    .ckan-resource-icon-bg-pos(13,
+    "resourceIcon");
+}
+
+.format-label[data-format=png],
+.format-label[data-format*=png] {
+    .ckan-resource-icon-bg-pos(14,
+    "resourceIcon");
+}
+
+.format-label[data-format=jpg],
+.format-label[data-format*=jpg],
+.format-label[data-format=jpeg],
+.format-label[data-format*=jpeg] {
+    .ckan-resource-icon-bg-pos(15,
+    "resourceIcon");
+}
+
+.format-label[data-format=gif],
+.format-label[data-format*=gif] {
+    .ckan-resource-icon-bg-pos(16,
+    "resourceIcon");
+}
+
+.format-label[data-format=wfs],
+.format-label[data-format*=wfs] {
+    .ckan-resource-icon-bg-pos(18,
+    "resourceIcon");
+}
+
+.format-label[data-format=gml],
+.format-label[data-format*=gml] {
+    .ckan-resource-icon-bg-pos(19,
+    "resourceIcon");
+}
+
+.format-label[data-format=wmts],
+.format-label[data-format*=wmts] {
+    .ckan-resource-icon-bg-pos(20,
+    "resourceIcon");
+}
+
+.format-label[data-format=kml],
+.format-label[data-format*=kml] {
+    .ckan-resource-icon-bg-pos(21,
+    "resourceIcon");
+}
+
+.format-label[data-format=geo],
+.format-label[data-format=shp],
+.format-label[data-format*=geo] {
+    .ckan-resource-icon-bg-pos(22,
+    "resourceIcon");
+}
+
+.humanitarianicons-Environment.fresh {
+    color: @freshGreenColor;
+    margin-left: 0;
+}
+
+.humanitarianicons-Help.freshness {
+  color: @blueColor;
+
+  &::before {
+    color: @blueColor;
+  }
+}
+

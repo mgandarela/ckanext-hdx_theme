@@ -1,0 +1,171 @@
+{% extends "page.html" %}
+{% set page_has_mobile_version = True %}
+
+{% block styles %}
+  {{ super() }}
+  {% asset 'hdx_theme/activity-stream-styles' %}
+  {% asset 'hdx_theme/custom-org-search-facets-styles' %}
+
+  {% set customizations = h.load_json(h.hdx_get_extras_element(data.org_meta.org_dict, value_key="customization")) %}
+  {% snippet "organization/custom/custom_style.html", customizations=customizations %}
+{% endblock %}
+
+{# The lines below are for analytics #}
+{% block analytics_org_name %}{{ data.org_info.name }}{% endblock %}
+{% block analytics_org_id %}{{ data.org_info.id }}{% endblock %}
+
+{% block subtitle %}{{ data.org_info.display_name }}{% endblock %}
+
+{% block breadcrumb_content %}
+  {% snippet "snippets/other_breadcrumb_item.html", title=_('Organizations'), controller='organization', action='index', position=2 %}
+  <li class="active"><a>{{data.org_info.name}}</a></li>
+{% endblock %}
+
+{% block primary_content %}
+    {% snippet 'organization/custom/custom_org_header.html', org_meta=data.org_meta %}
+
+    <div>
+        <header class="module-content page-header paddingRowHack mTop20 mBottom10">
+            <ul class="nav nav-tabs paddingLeftHack paddingRightHack">
+               {% block content_primary_nav %}
+                    {{ h.build_nav_icon('hdx_org.read', _('Datasets'), id=data.org_info.name, class_='hdx-tab-button') }}
+                    {{ h.build_nav_icon('hdx_org.activity', _('Activity Stream'), id=data.org_info.name, class_='hdx-tab-button') }}
+                    {% if c.user %}
+                        {{ h.build_nav_icon('hdx_members.members', _('Members'), id=data.org_info.name, class_='hdx-tab-button') }}
+                    {% endif %}
+                    {% if h.check_access('organization_update', {'id': data.org_info.id}) %}
+                        {{ h.build_nav_icon('requestdata_organization_requests.requested_data', _('Requested Data'), id=data.org_info.name) }}
+                    {% endif %}
+                    {{ h.build_nav_icon('hdx_org.stats', _('Stats'), id=data.org_info.name, class_='hdx-tab-button') }}
+               {% endblock %}
+            </ul>
+        </header>
+    </div>
+
+    {# <div id="key-figures" class="row paddingRowHack whiteBackground">
+        {% if data.top_line_items %}
+            <div class="col-xs-12 paddingLeftHack paddingRightHack">
+                <div class="list-header crisis-list-header">
+                    <span class="mL15 list-header-title">
+                        {{ _("Key Figures") }}
+                    </span>
+                </div>
+            </div>
+            <div id="key-figures-content" class="col-xs-12 paddingLeftHack paddingRightHack">
+                <div class="row">
+                    {% for top_line_item in data.top_line_items %}
+                        <div class="col-xs-3">
+                            {{ h.snippet('crisis/snippets/topline.html', title=top_line_item.title, value=top_line_item.formatted_value,
+                            unit=top_line_item.units,
+                            notes=top_line_item.notes, source=top_line_item.source,
+                            source_link=top_line_item.source_link, explore=top_line_item.explore, latest_date=top_line_item.latest_date) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>  #}
+    {% if data.show_visualization %}
+    <div class="row paddingRowHack whiteBackground">
+        <div class="col-xs-12 paddingLeftHack paddingRightHack">
+            {{ h.snippet('widget/popup/popup-embed.html', id="embedPopup", triggerId="embedPopupTrigger",
+                title="Embed data",
+                embed_url=data.visualization.embed_url,
+                content_class="content-white",
+                class="popup-embed",
+                data=data.visualization.config_url,
+                sizes=[{"width": "800", "height": "500"},
+                       {"width": "1000","height": "500"},
+                       {"width": "1200","height": "500"}]) }}
+        </div>
+
+        <div id="interactive-data" class="col-xs-12 paddingLeftHack paddingRightHack">
+            <div class="list-header crisis-list-header">
+                <span class="mL15 list-header-title">
+                    {{ _("Interactive Data") }}
+                </span>
+            </div>
+            <input type="hidden" id="visualization-data" value="{{ h.json_dumps(data.visualization.config) }}">
+        </div>
+            {% set viz_title = data.visualization.config.title or '' %}
+            {% set data_link_url = data.visualization.config.data_link_url or '#' %}
+            <div class="col-xs-12 paddingLeftHack paddingRightHack">
+                <div class="mTop20 mBottom20">
+                    <div class="pull-left visualization-title">
+                        {{viz_title}}
+                        {% if data_link_url != '' and data_link_url !='#' %}
+                            <span> <a target="_blank" href="{{data_link_url}}">Data</a></span>
+                        {% endif %}
+                    </div>
+
+                    {% if data.visualization.config.type != 'embedded' and data.visualization.config.type != 'embedded-preview' %}
+
+                        <div class="pull-right">
+                            <ul class="mainLinks visualization-links">
+                                <li><a id="embedPopupTrigger" href="#">{{ _("Embed") }}</a></li>
+                                <!--<li><a href="#">{{ _("Save as image") }}</a></li>-->
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+                <input type="hidden" id="visualization-data" value="{{ h.json_dumps(data.visualization.config) }}">
+            </div>
+        <div id="mapbox-baselayer-url-div" style="display: none;">{{ h.hdx_get_ckan_config('hdx.mapbox.baselayer.url') }}</div>
+        <div style="display: none" id="wfp-viz-embed-url">{{ data.visualization.embed_url }}</div>
+        <div style="display: none" id="wfp-viz-embed-datastore">{{ data.visualization.config.datastore_id }}</div>
+
+        {% if data.visualization.config.type == 'embedded' %}
+            <div class="col-xs-12 paddingLeftHack paddingRightHack mTop15">
+                <iframe id="embedded-viz-iframe" src="{{ data.visualization.config.vis_url }}" frameborder="0" width="{{ data.visualization.config.width }}" height="{{ data.visualization.config.height }}" data-hj-allow-iframe=""></iframe>
+            </div>
+        {% endif %}
+        {% if data.visualization.config.type == 'embedded-preview' %}
+            <div class="col-xs-12 paddingLeftHack paddingRightHack mTop15">
+                <div style="width: {{ data.visualization.config.width }}; height: {{ data.visualization.config.height }};">
+                    <a href="{{ data.visualization.config.vis_url }}"
+                       target="_blank">
+                        <div style="height: {{ data.visualization.config.height }}; width: {{ data.visualization.config.width }}; background: url({{ data.visualization.config.embedded_preview }}) no-repeat center center; background-size: cover;">
+                        </div>
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="row paddingRowHack whiteBackground">
+        <div class="col-xs-12 paddingLeftHack paddingRightHack">
+            {% snippet 'search/snippets/search_results_wrapper.html',
+                    tracking_enabled=g.tracking_enabled, my_c=data.search_template_data %}
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block secondary %}
+{% endblock %}
+
+{% block scripts2 %}
+  {{ super() }}
+{#  {% resource 'hdx_theme/activity-stream' %}#}
+{#  {% resource 'hdx_theme/jquery.highlight' %}#}
+{#  {% resource 'hdx_theme/jquery.expander' %}#}
+{#  {% resource 'hdx_theme/custom-org' %}#}
+{#  {% resource 'hdx_theme/search' %}#}
+{#  {% resource 'hdx_theme/popup' %}#}
+{#  {% resource 'hdx_theme/popup-embed' %}#}
+{#  {% resource 'hdx_theme/hdx_show_more.js' %}#}
+{#  {% resource 'hdx_theme/search-facets' %}#}
+
+  {% asset 'hdx_theme/search-scripts' %}
+  {% asset 'hdx_theme/custom-org-scripts' %}
+  {% asset 'hdx_theme/popup-embed-scripts' %}
+
+
+{% endblock %}
+
+{% block meta %}
+  {{ super() }}
+  {% snippet "widget/banner/hdx-dataset-banner.html" %}
+{% endblock %}

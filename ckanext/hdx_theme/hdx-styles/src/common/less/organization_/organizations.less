@@ -1,0 +1,149 @@
+@import "../base/variables";
+@import "../base/mixins";
+
+@import "../light/search/mobile-facets";
+
+@media (max-width: @cut-point-laptop-s) {
+  [role=main], .main {
+    background-color: @extraLightGrayColor;
+  }
+  #organizationsSection {
+    .list-header {
+      margin-top: 0;
+    }
+    ul.dataset-list {
+      padding: 0;
+
+      .dataset-item {
+        background-color: @whiteColor;
+        padding: 20px;
+        border: 1px solid @extraLightGrayAccent;
+        margin-bottom: 10px;
+
+        .dataset-content {
+          .mL15 {
+            margin-left: 0;
+          }
+          .organization-heading {
+            margin-top: 0;
+
+            ~ .list-items {
+              margin-top: 10px;
+            }
+          }
+
+          .dataset-description {
+            margin-top: 15px;
+          }
+        }
+      }
+    }
+
+    .mobile-facets {
+      .control-group {
+        float: none;
+        margin-top: 15px;
+      }
+      .list-header-showall {
+        margin-top: 10px;
+      }
+    }
+  }
+}
+
+.organization-heading{
+  text-decoration: none;
+  font-size: 18px;
+  margin-top: -5px;
+  margin-bottom: -5px;
+  font-weight: bold;
+}
+
+.dataset-item {
+    margin: 0;
+    border-bottom: 1px solid @extraLightGrayColor;
+    padding: 15px 0;
+}
+
+.featured-org {
+  border: 1px solid @extraLightGrayColor;
+
+  @featurePadding: 20px;
+  .feature-header {
+    @headerHeight: 200px;
+    @logoHeight: 75px;
+    position: relative;
+
+    a {
+      &:hover{
+        .org-thumbnail img{
+          opacity: 1;
+        }
+        .feature-highlight {
+          background-color: fade(@orangeColor, 100%);
+        }
+      }
+
+      .org-thumbnail{
+        overflow: hidden;
+        height: @headerHeight;
+        width: 100%;
+
+        img {
+          height: @headerHeight + 20px;
+          opacity: 0.9;
+        }
+      }
+      .feature-highlight {
+        width: 100%;
+        padding: 7px 15px;
+        background-color: fade(@orangeColor, 90%);
+        position: absolute;
+        top: 0;
+        .sourceSansProFont(400, 11px);
+        line-height: 13px;
+        .letter-spacing-1();
+        color: @whiteColor;
+        a {
+          color: @whiteColor;
+        }
+      }
+    }
+
+    .logo-box{
+      position: absolute;
+      top: @headerHeight - @logoHeight + @featurePadding;
+      right: @featurePadding;
+
+      max-height: @logoHeight;
+      .table-valign{
+        .org-logo(@logoHeight, @logoHeight, 60px, 60px);
+      }
+    }
+  }
+
+  .feature-content{
+    padding: @featurePadding;
+
+    .list-items{
+      margin-top: 3px;
+    }
+
+    .organization-heading a {
+      color: @blackColor;
+    }
+
+    .last-update {
+      color: @darkGrayColor;
+      margin-top: 7px;
+      margin-bottom: 7px;
+      font-size: 12px;
+    }
+
+    .dataset-description {
+      min-height: 40px;
+    }
+
+  }
+}
+

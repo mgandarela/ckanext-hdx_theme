@@ -1,0 +1,101 @@
+{#
+Renders a list of resources with icons and view links.
+
+resources - A list of resources to render
+pkg - A package object that the resources belong to.
+
+Example:
+
+  {% snippet "package/snippets/resources_list.html", pkg=pkg, resources=pkg.resources %}
+
+#}
+{% import 'macros/form.html' as form %}
+
+{#{% resource 'hdx_theme/requestdata/modal-form.js' %}#}
+{#{% resource 'requestdata/css/main.css' %}#}
+{#{% resource 'hdx_theme/bs_tooltip.js' %}#}
+{% asset 'requestdata/main-styles' %}
+{% asset 'hdx_theme/requestdata-scripts' %}
+
+{{ h.snippet('widget/onboarding/data-use-survey.html', id="dataUseSurveyPopup", pkg=pkg) }}
+{% set resource_item_snippet = resource_item_snippet or 'package/snippets/resource_item.html' %}
+
+<p id="dataset-resources" class="resources mTop35 info-wrapper">
+  <div class="requested-data-message"></div>
+  {% block resource_list %}
+    {% if resources %}
+      {% snippet 'package/snippets/groupings.html', pkg=pkg %}
+      <ul class="{% block resource_list_class %}hdx-bs3 resource-list{% endblock %}">
+        {% block resource_list_inner %}
+          {% for resource in resources %}
+            {% snippet resource_item_snippet, pkg=pkg, res=resource %}
+          {% endfor %}
+        {% endblock %}
+      </ul>
+    {% else %}
+      {% if pkg.is_requestdata_type %}
+        {% if c.userobj %}
+         {% set is_logged_in = 'true' %}
+        {% else %}
+         {% set is_logged_in = 'false' %}
+        {% endif %}
+        {% set is_hdx = h.requestdata_is_hdx_portal() %}
+        {% set redirect_url = h.url_for('user.login') %}
+        {% set requestdata_action = h.url_for('requestdata_send_request.send_request') %}
+        {% set request_post_data = h.dump_json({'package_id':pkg.id, 'package_name': pkg.name, 'package_title':pkg.title}) %}
+        {% set is_current_user_a_maintainer = h.requestdata_is_current_user_a_maintainer(pkg.maintainer) %}
+        {% trans %}
+          <p class="empty">The contributor has only shared the metadata for this dataset. To access the data, please use the request button.</p>
+          <span data-module="bs_tooltip"
+               data-module-placement="left"
+               data-toggle="tooltip"
+               title="Request data directly from the maintainer of this dataset."
+               class="pull-right"
+               style="margin-top: 10px;"
+          >
+            <a href="#" class="btn btn-primary"
+               data-module="hdx-modal-form"
+               data-module-template_file="request_contact.html"
+               data-module-submit_action="{{ requestdata_action }}"
+               data-module-post_data="{{ request_post_data }}"
+               data-module-is_logged_in="{{ is_logged_in }}"
+               data-module-is_hdx="{{ is_hdx }}"
+               data-module-redirect_url="{{ redirect_url }}"
+               data-module-is_current_user_a_maintainer="{{ is_current_user_a_maintainer }}"
+            >Request data</a>
+          </span>
+
+          <div class="container-subpanel">
+
+            <div class="circle gray-bg"></div>
+            <div class="lines">
+              <div class="upper gray-bg"></div>
+              <div class="lower gray-bg"></div>
+            </div>
+
+          </div>
+        {% endtrans %}
+      {% else %}
+        {# Comment out "add some" as action doesn't exist yet #}
+        <p class="empty mTop20">This dataset has no data,
+          <a class="info-item-name" href="#" onclick="contributeAddDetails('{{pkg.id}}', 'resource list')" >why not add some?</a>
+        </p>
+      {% endif %}
+
+
+    {% endif %}
+
+    {% endblock %}
+
+<div class="modal data-check-modal" id="preview-data-check" tabindex="-1" role="dialog" data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="large">Data Check</span> - Use data with HXL hashtags to automatically detect errors and validate against common vocabularies.
+      </div>
+      <iframe style="min-height: 70vh; height: 100%; max-height: 90vh;" frameborder="0" width="1260" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+    </div>
+  </div>
+</div>
+

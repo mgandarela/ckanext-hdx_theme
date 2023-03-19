@@ -1,0 +1,57 @@
+@import "../../base/mixins";
+@import "../../base/variables";
+@import "notification";
+@import "onboarding-variables";
+
+@recoverHeight: 360px - @notificationTitleHeight;
+
+.recover-widget {
+  position: relative;
+  width: @popupContentWidth;
+  height: @recoverHeight;
+  background-color: @extraLightGrayColor;
+
+  padding: @notificationPaddingSize;
+  .btn-primary {
+    width: 100%;
+  }
+  .not-member {
+    color: @grayColor;
+    a {
+      font-weight: 700;
+    }
+  }
+  .logo {
+    height: 30px;
+  }
+}
+
+#recoverPopup {
+  .notification-widget {
+    width: 370px;
+  }
+  .notification-title {
+    padding: 0;
+    height: 200px;
+    position: relative;
+
+    .close {
+      position: absolute;
+      float: none;
+      top: 20px;
+      right: 20px;
+      font-size: 21px;
+    }
+    .title {
+      position: absolute;
+      left: 20px;
+      bottom: 20px;
+      color: @whiteColor;
+    }
+    img {
+      position: absolute;
+      height: 100%;
+      right: 0;
+    }
+  }
+}

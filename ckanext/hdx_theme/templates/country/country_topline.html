@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block subtitle %}{{ _("Embed") }}{% endblock %}
+
+{%- block page %}
+{% if data.widgets.top_line_data_list %}
+
+  {% asset 'hdx_theme/country-topline-scripts' %}
+  {% asset 'hdx_theme/page-light-styles' %}
+
+
+    {% set country_active = data.country_dict.activity_level == 'active' %}
+    <div class="row">
+      {% snippet 'country/key-figures.html', country_active=country_active, data=data, embedded=true %}
+    </div>
+{% endif %}
+{% endblock -%}
+
+{% block bodytag %} style="background-color:inherit; " class="container-fluid" data-site-root="{{ h.url('/', locale='default', qualified=false) }}" data-locale-root="{{ h.url('/', qualified=false) }}" data-api-root="{{ g.api_url }}"{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% endblock %}
+

@@ -1,0 +1,270 @@
+{% extends "crisis/crisis-base.html" %}
+{% set page_has_mobile_version = True %}
+
+{% block styles %}
+  {{ super() }}
+    {% asset 'hdx_theme/activity-stream-styles' %}
+{% endblock %}
+
+{# The lines below are for analytics #}
+{% block analytics_group_names %}['{{ data.country_dict.name }}']{% endblock %}
+{% block analytics_group_ids %}['{{ data.country_dict.id }}']{% endblock %}
+
+{% block subtitle %}
+    {{ data.country_dict.display_name }}
+{% endblock %}
+
+{% block crisis_map %}
+    {% block crisis_actions %}
+    {% endblock %}
+{% endblock %}
+
+{% block breadcrumb_content %}
+    {% snippet "snippets/other_breadcrumb_item.html", title=_('Groups'), controller='group', action='index', position=2 %}
+    <li class="active">{% link_for data.country_dict.display_name, controller='group', action='read', id=data.country_dict.name %}</li>
+{% endblock %}
+
+{% block crisis_data %}
+    {% set country_active = data.country_dict.activity_level == 'active' %}
+    <div id="countryMapPolygon" style="display: none;">
+        {% if data.country_dict.geojson %}
+            {{ data.country_dict.geojson | safe }}
+        {% endif %}
+    </div>
+    <div class="row">
+        <div class="list-items dataset-content mTB15">
+            <div class="col-xs-12">
+                <h1 class="country-title">{{ data.country_dict.display_name }}</h1>
+            </div>
+            <div class="col-xs-6 mTop8">
+                <div class="base-actions-menu">
+                    <ul>
+                        <li>
+                            {% set num_of_pack = data.stats_section.num_of_datasets %}
+                            {% if num_of_pack%}
+                                <span class="sspBold14">
+                                    <a class="sspBold14" href="?#dataset-filter-start">
+                                        {{ num_of_pack }} {% if num_of_pack != 1 %}{{ _('Datasets') }}{% else %}{{ _('Dataset') }}{% endif %}
+                                    </a>
+                                    {% if data.stats_section.num_of_cods > 0 %}
+                                        (<a href="?ext_cod=1#dataset-filter-start">{{ data.stats_section.num_of_cods }} CODs</a>)
+                                    {% endif %}
+
+                                </span>
+                            {% else %}
+                                <span class="sspBold14">{{ _('0 Datasets') }}</span>
+                            {% endif %}
+                        </li>
+                        <li>
+
+                            {% set num_of_followers = data.stats_section.num_of_followers %}
+                                        <span class="sspBold14">{{ num_of_followers }} {% if num_of_followers != 1 %}{{ _('Followers') }}{% else %}{{ _('Follower') }}{% endif %}</span>
+
+                        </li>
+                        <li>
+                            <span class="dropdown dropdown-on-hover">
+                                <a href="#" data-toggle="dropdown" data-module-trigger="hover focus click" data-module-placement="bottom">
+                                    {% set num_of_orgs = data.stats_section.num_of_organizations %}
+                                    <span class="sspBold14">{{ num_of_orgs }} {% if num_of_orgs != 1 %}{{ _('Organisations') }}{% else %}{{ _('Organisation') }}{% endif %}</span>
+                                </a>
+                                <div class="followers-list-popup dropdown-menu bottom">
+                                  <div class="hdx-arrow-wrapper">
+                                  <ul class="followers-list">
+                                    {% for org in data.stats_section.organization_list %}
+                                        <li class="follower-item">
+                                            <a href="{{ org.url }}">{{ org.display_name }}</a>
+                                        </li>
+                                    {% endfor %}
+                                  </ul>
+                                  </div>
+                                </div>
+                            </span>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+            <div class="col-xs-6">
+                {% snippet "country/country_actions_menu.html", country=data.country_dict, can_edit=h.check_access('group_update', {'id': data.country_dict.id}), classes='base-actions-menu followButtonContainer pull-right' %}
+            </div>
+        </div>
+    </div>
+
+    {% if (not data.country_dict.key_figures or data.country_dict.key_figures == 'active') and data.widgets.top_line_data_list %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="list-header crisis-list-header">
+                <span class="mL15 list-header-title">
+                    {{ _("Key Figures") }}
+                </span>
+            </div>
+        </div>
+        {% snippet 'country/key-figures.html', country_active=country_active, data=data, embedded=false %}
+    </div>
+    {% endif %}
+
+    {% if data.widgets.show and false %}
+    <div class="row">
+        <div class="col-xs-4">
+            <div class="row topline-numbers">
+                <div class="col-xs-12 mTop35 mBottom35 topline-title">
+                    Overview
+                </div>
+
+                <div class="col-xs-12">
+                    <table>
+                        {% for value in data.widgets.top_line_data_list %}
+                            <tr class="indicator">
+                                <td class="name">
+                                    {{ value.indicatorTypeName }}
+                                </td>
+                                <td class="value">
+                                    <span data-module="bs_tooltip" data-toggle="tooltip" data-module-placement="left" title="{{ value.unitName }}">{{ value.formatted_value }}</span>
+                                </td>
+                            </tr>
+                            <tr class="extra-info">
+                                <td colspan="2">
+                                    <span>
+                                        {{ value.sourceName }}
+                                        {%  if value.datasetLink %}
+                                            - <a href="{{ value.datasetLink }}">Data</a>
+                                        {% endif %}
+                                        {%  if value.datasetUpdateDate %}
+                                            - {{ value.datasetUpdateDate }}
+                                        {% endif %}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {% for val in data.widgets.chart_data_list %}
+            <div class="col-xs-4">
+                <div class="row topline-charts">
+                    <div class="col-xs-12 mTop35 topline-title">
+                        {{ val.title }}
+                    </div>
+                    <div class="col-xs-12 mTop10 mBottom10">
+                        <span data-module="bs_tooltip" data-toggle="tooltip" data-module-placement="right" title="{{ val.unit }}" class="last-value">{{ val.lastValue }} <span class="last-date">/ {{ val.lastDate[:4] }}</span></span>
+                    </div>
+                    <div class="data hidden">
+                        {{ val.data | safe }}
+                    </div>
+                    <div class="unit-name hidden">
+                        {{ val.unit | safe }}
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="chart-item"></div>
+                    </div>
+                        {{ val.sourceName }}
+                        {%  if val.datasetLink %}
+                            - <a href="{{ val.datasetLink }}">Data</a>
+                        {% endif %}
+                        {%  if val.datasetUpdateDate %}
+                            - {{ val.datasetUpdateDate }}
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+    {% endif %}
+
+    {% if data.data_completness %}
+    <div class="row data-completeness">
+      <div class="col-xs-12">
+        <div class="list-header crisis-list-header">
+          <span class="mL15 mR30 list-header-title">
+              {{ _("Data Grid Completeness") }}
+          </span>
+
+
+          <div class="progress-breakdown progress-header">
+            {% set dataseries_good_percentage = 100*data.data_completness.stats.dataseries_good_percentage %}
+            <span class="progress-blue" style="width: {{ dataseries_good_percentage }}%;"
+                  data-module="bs_tooltip" data-module-placement="top"
+                  data-toggle="tooltip" data-html="true" data-original-title="{{ dataseries_good_percentage | int }}%">
+              {% if dataseries_good_percentage > 30 %} {{ dataseries_good_percentage | int }}%&nbsp; {% endif %}
+            </span>
+            {% set dataseries_not_good_percentage = 100*data.data_completness.stats.dataseries_not_good_percentage %}
+            <span class="progress-striped" style="width: {{ dataseries_not_good_percentage }}%;"
+                  data-module="bs_tooltip" data-module-placement="top"
+                  data-toggle="tooltip" data-html="true" data-original-title="{{ dataseries_not_good_percentage | int }}%">
+              {% if dataseries_not_good_percentage > 30 %} {{ dataseries_not_good_percentage | int }}%&nbsp; {% endif %}
+            </span>
+            {% set dataseries_other_percentage = 100*(1 - data.data_completness.stats.dataseries_good_percentage - data.data_completness.stats.dataseries_not_good_percentage) %}
+            <span class="progress-empty" style="width: {{ dataseries_other_percentage }}%;"
+                  data-module="bs_tooltip" data-module-placement="top"
+                  data-toggle="tooltip" data-html="true" data-original-title="{{ dataseries_other_percentage | int }}%">
+              {% if dataseries_other_percentage > 30 %} {{ dataseries_other_percentage | int }}%&nbsp; {% endif %}
+            </span>
+          </div>
+
+          <span class="mL45 list-header-showall list-completeness">
+            <span>{{data.data_completness.stats.good_dataseries_num}}/{{data.data_completness.stats.total_dataseries_num}} Core Data</span>
+            <span>{{ data.data_completness.stats.total_datasets_num }} Datasets</span>
+            <span>{{ data.data_completness.stats.org_num }} Organisations</span>
+          </span>
+
+          <span class="mL45 pull-right completeness-header-actions">
+              <a class="show-completeness-legend">Show legend</a>
+              {% snippet 'country/completeness_legend.html' %}
+
+              <span>Expand</span>
+              <span>
+                <span class="checkbox-slider" style="display: inline-block; top: 5px; margin-left: 3px;">
+                  <input id="expand-data-completeness" type="checkbox" checked="checked" class="checkbox-slider-checkbox" autocomplete="off" />
+                  <label id="expand-data-completeness-label" class="checkbox-slider-label" for="expand-data-completeness">
+                    <span class="checkbox-slider-inner"></span>
+                    <span class="checkbox-slider-switch"></span>
+                  </label>
+                </span>
+              </span>
+          </span>
+
+        </div>
+      </div>
+      {% snippet 'country/completeness_list.html', data=data %}
+    </div>
+    {% endif %}
+
+
+    <div class="row">
+        <div class="col-xs-12">
+			<div class="row">
+                {% if data.widgets.show and false %}
+                    <div class="col-xs-12">
+                        <div class="mBottom15 mTop15" style="border-bottom: 1px solid #dddddd;"> </div>
+                    </div>
+                {% endif %}
+	        	<div class="col-xs-12">
+                    {% snippet 'search/snippets/search_results_wrapper.html', tracking_enabled=g.tracking_enabled, my_c=data.country_dict.template_data %}
+	        	</div>
+    		</div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block page_warning_bar %}
+  {% if data.country_dict.alert_bar_url %}
+    {% snippet 'snippets/full_width_alert_bar.html', alert_bar_url=data.country_dict.alert_bar_url, alert_bar_title=data.country_dict.alert_bar_title, skip_js=True %}
+  {% endif %}
+{% endblock %}
+
+{% block package_search_results %}
+{% endblock %}
+
+{% block scripts2 %}
+    {{ super() }}
+    {% asset 'hdx_theme/country-scripts' %}
+    {% asset 'hdx_theme/hdx-show-more' %}
+  {% if not data.country_dict.alert_bar_url %}
+    {% snippet "widget/banner/hdx-dataset-banner.html" %}
+  {% endif %}
+{% endblock %}

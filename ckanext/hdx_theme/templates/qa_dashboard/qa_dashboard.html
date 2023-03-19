@@ -1,0 +1,60 @@
+{% extends "page.html" %}
+{% import 'macros/form.html' as form %}
+
+{% block styles %}
+  {{ super() }}
+  <link href='https://cdn.jsdelivr.net/npm/handsontable@8.0.0/dist/handsontable.full.min.css' rel='stylesheet' />
+  {% asset 'hdx_theme/qa-dashboard-styles' %}
+
+{% endblock %}
+
+{% block subtitle %}{{ _("QA Dashboard") }}{% endblock %}
+
+{% block breadcrumb_content %}
+  <li class="active">{{ h.nav_link(_('Datasets'),
+  	named_route='hdx_qa.dashboard', highlight_actions = 'new index') }}</li>
+{% endblock %}
+
+{% block primary_content %}
+    {{ h.snippet('widget/loading/loading.html', id="loadingScreen", message="Sending, please wait ...") }}
+    {{ h.snippet('qa_dashboard/qa_checklist.html', id="qaChecklist") }}
+    {{ h.snippet('qa_dashboard/qa_sdc_micro.html', id="qaSDCMicro") }}
+
+    {% block search_results_wrapper %}
+        {% set contact_topics = data.membership.data.contributor_topics %}
+        {% set membership_data = data.membership.data %}
+        {{ h.snippet('widget/membership/contact-contributor.html', id="contactContributorPopup", title=title, topics=contact_topics, membership_data=membership_data) }}
+
+        <div id="search-recs"></div>
+        {% snippet 'qa_dashboard/qa_search_results_wrapper.html',
+                            tracking_enabled=g.tracking_enabled, my_c=data.search_template_data, display_min=true %}
+    {% endblock %}
+  {% block package_search_results_api %}
+  {% endblock %}
+{% endblock %}
+
+{% block secondary %}
+{% endblock %}
+
+
+{% block scripts2 %}
+  {{ super() }}
+  <script src='https://cdn.jsdelivr.net/npm/handsontable@8.0.0/dist/handsontable.full.min.js'></script>
+{#  {% resource 'hdx_theme/bs_tooltip.js' %}#}
+{#  {% resource 'hdx_theme/jquery.highlight' %}#}
+{#  {% resource 'hdx_theme/jquery.expander' %}#}
+{#  {% resource 'hdx_theme/hdx_show_more.js' %}#}
+{#  {% resource 'hdx_theme/search/search_page.js' %} DOESN'T SEEM TO BE USED ANYMORE #}
+
+  {% asset 'hdx_theme/hdx-show-more' %}
+{% endblock %}
+
+
+{% block  global_dataset_input_search%}
+	{% if data.search_template_data.other_links and data.search_template_data.other_links.params_noq %}
+  		{% for key,value in data.search_template_data.other_links.params_noq.items() %}
+  			<input type="hidden" name="{{ key }}" value="{{ value }}" />
+  		{% endfor %}
+  	{% endif %}
+  <input type="text" class="searchInput" name="q" id="q" value="{{ data.search_template_data.q }}" autocomplete="off" placeholder="{{ _('Search all data') }}">
+{% endblock %}

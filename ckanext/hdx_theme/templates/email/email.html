@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <style>
+      body{
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+      }
+      p {
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+  <div align="center">
+    <img style="max-width:200px; width:50%" src="{{ data.logo_hdx_email }}" />
+  </div>
+  <div>
+    {% snippet data._snippet, data=data.data %}
+  </div>
+  <div>
+    <p>
+      Best regards,<br/>
+      The HDX team
+    </p>
+  </div>
+  <footer>
+    {% if data.footer %}
+      <p style="font-size:10px;text-align:center;">
+{#        You are receiving this email because you joined HDX with the email {{ data.footer }}.#}
+        You are receiving this email because you are a registered HDX user.
+      </p>
+    {% endif %}
+{#    <p style="font-size:10px;text-align:center;">#}
+    <p style="text-align:center;">
+      <a href="https://data.humdata.org">HDX</a> is a product of the <a href="https://unocha.org">United Nations Office
+      for the Coordination of Humanitarian Affairs</a> (OCHA) - <a href="https://centre.humdata.org">Centre for
+      Humanitarian Data</a>. Keep in touch by <a href="https://twitter.com/humdata">following us on Twitter</a>, <a
+            href="https://humdata.us14.list-manage.com/subscribe?u=ea3f905d50ea939780139789d&id=99796325d1">signing up for
+      our mailing list</a>, or replying to this email.
+    </p>
+  </footer>
+
+  </body>
+</html>

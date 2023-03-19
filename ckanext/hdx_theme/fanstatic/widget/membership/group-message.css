@@ -1,0 +1,34 @@
+#groupMessagePopup {
+  position: relative;
+}
+#groupMessagePopup .two-column-widget .two-column-left {
+  background-color: #1ebfb3;
+  height: 560px;
+}
+#groupMessagePopup .two-column-widget .two-column-right {
+  height: 560px;
+  padding: 60px;
+}
+#groupMessagePopup .two-column-widget .two-column-right .right-side-actions {
+  width: 257px;
+  right: 60px;
+}
+#groupMessagePopup .two-column-widget .two-column-right .right-side-actions .grecaptcha-badge {
+  position: absolute;
+  top: -75px;
+}
+#groupMessagePopup .two-column-widget .two-column-right .right-side-actions .btn-primary {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+#groupMessagePopup textarea {
+  height: 100px;
+  padding: 14px 20px;
+}
+#groupMessagePopup textarea ~ label {
+  bottom: 56px;
+}
+#groupMessagePopup textarea.input-content ~ label {
+  bottom: 6px;
+}

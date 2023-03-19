@@ -1,0 +1,71 @@
+@import "../../base/variables";
+
+@popupWidth: 370px;
+@paddingNormal: 35px;
+@paddingSmall: 20px;
+@paddingLarge: 60px;
+@checkBoxSize: 12px;
+@bigColumnWidth: 445px;
+@baseHeight: 560px;
+@baseLineHeight: 20px;
+
+@inputHeight: 44px;
+@inputPadding: @paddingSmall;
+
+@widgetHeight: @baseHeight;
+@textAreaHeight: 100px;
+
+#faq-msg {
+  height: @textAreaHeight;
+  padding: 14px @paddingSmall;
+  & ~ label{
+    bottom: @textAreaHeight - @inputHeight;
+  }
+  &.input-content ~ label {
+    bottom: 6px;
+  }
+
+}
+
+#faq-send-message {
+  .captcha{
+    overflow: hidden;
+  }
+  .grecaptcha-badge {
+      margin-bottom: 60px;
+      margin-right: 25px;
+  }
+}
+
+#faqSendMsgPopup{
+  .two-column-widget {
+    .two-column-left {
+      background-color: #1ebfb3;
+      height: @widgetHeight;
+      @media (max-width: @cut-point-tablet) {
+        height: auto;
+      }
+    }
+
+    @extraPaddingTwoColumnRight: 50px;
+    .two-column-right {
+      height: @widgetHeight;
+      padding: @paddingLarge;
+
+      @media (max-width: @cut-point-mobile-m) {
+        padding: 10px;
+
+        .right-side-actions {
+          right: 25px;
+        }
+      }
+
+    }
+  }
+}
+
+#faqDonePopup{
+  .notification-widget .notification-title {
+      text-align: center;
+  }
+}

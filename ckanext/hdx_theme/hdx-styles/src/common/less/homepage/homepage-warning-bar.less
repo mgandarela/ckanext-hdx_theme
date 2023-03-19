@@ -1,0 +1,48 @@
+@import "../base/variables";
+
+.hdx-warning {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    min-width: 1260px;
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: @lightRedColor;
+    z-index: 1000;
+
+    .hdx-warning-text {
+        width: 1170px;
+        margin-left: auto;
+        margin-right: auto;
+        color: @whiteColor;
+        text-decoration: underline;
+        font-family: "Gotham-Bold", sans-serif;
+        .hdx-warning-text-important {
+            font-size: 16px;
+            color: inherit;
+        }
+        .hdx-warning-text-arrow {
+          font-size: 14px;
+        }
+    }
+
+    &.hdx-announcement {
+        background-color: @whiteColor;
+        .hdx-warning-text {
+            color: @blueColor;
+        }
+    }
+
+}
+
+@media (max-width: 767px) {
+    .hdx-warning {
+        min-width: 0;
+
+        .hdx-warning-text {
+            padding: 0 10px;
+            width: 100%;
+        }
+    }
+}

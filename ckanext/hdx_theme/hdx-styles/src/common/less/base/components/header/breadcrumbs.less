@@ -1,0 +1,55 @@
+@import "../../variables";
+@import "../../mixins";
+
+@toolbarBackgroundColor: @extraLightGrayColor;
+@toolbarHeight: 20px;
+/* Style breadcrumbs */
+.toolbarRow{
+  background-color: @toolbarBackgroundColor;
+  height: @toolbarHeight;
+
+  .toolbar{
+    margin: 0;
+    padding: 0;
+
+    .breadcrumb{
+      height: 20px;
+      max-height: 20px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      border: none;
+      background: none;
+      margin: 0;
+      padding: 0;
+      .sourceSansProFont(400, 12px);
+      line-height: @toolbarHeight;
+      .uppercase;
+      > li {
+        text-shadow: none;
+        white-space: nowrap;
+        display: inline; //in order ofr the text-overflow: ellipsis to work correctly on the last element
+        &:after{
+          content: " / ";
+        }
+        &.active {
+          &:after{
+            content: "";
+          }
+          a {
+            color: @darkGrayColor;
+            font-weight: bold;
+          }
+        }
+        a {
+          color: @darkGrayColor;
+        }
+      }
+      > li + li::before {
+        content: "";
+        padding: 0;
+      }
+    }
+  }
+}
+/* END Style breadcrumbs */

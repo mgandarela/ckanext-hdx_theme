@@ -1,0 +1,13 @@
+{% if tags %}
+  <section class="info-wrapper hdx-tags mTop20">
+    <div class="uppercase">{{ _('Tags:') }}</div>
+    <div class="mTop20">
+    	{% for tag in tags %}
+	    <div class="tag-wrapper">
+	      <a class="label tag" title="{{tag.display_name}}" href="{% url_for 'hdx_dataset.search', tags=tag.name %}">{{ tag.display_name }}</a>
+	    </div>
+	  {% endfor %}
+	  <span class="clear"></span>
+    </div>
+  </section>
+{% endif %}

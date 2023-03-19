@@ -1,0 +1,83 @@
+{% set updated_time = organization.created %}
+{% set f_updated_time = h.render_datetime(updated_time) %}
+{% set followers = h.get_group_followers(organization.id) %}
+{% set members = h.get_group_members(organization.id) %}
+
+{#{% resource 'hdx_theme/jquery.expander' %}#}
+{#{% resource 'hdx_theme/hdx_show_more.js' %}#}
+{% asset 'hdx_theme/hdx-show-more' %}
+
+<li class="list-items dataset-item">
+    <div class="row list-items dataset-content">
+        <div class="col-xs-12 col-md-6">
+            <span class="{% block indent_item %}mL15{% endblock %} pull-left">
+                {% block org_title %}
+                    <h3 class="list-items organization-heading">
+                    {% if light=='True' %}
+                      {{ h.nav_link( organization.title, named_route='hdx_light_org.light_read', id=organization.name, highlight_actions = 'new index') }}
+                    {% else %}
+                      {{ h.link_to(organization.title, h.url_for('hdx_org.read', id=organization.name)) }}
+                    {% endif %}
+                    </h3>
+                {% endblock %}
+                <div class="list-items mTop20">
+                    {% block links %}
+                        <span class="sspBold14" data-module="bs_tooltip" data-module-placement="top"
+                              data-toggle="tooltip" data-original-title="{{ _('Total public datasets') }}">
+                          {% if organization.package_count or organization.datasets_num %}
+                            {% if organization.package_count is number %}
+                                {% set num_of_pack = organization.package_count %}
+                            {% else %}
+                                {% set num_of_pack = organization.datasets_num %}
+                            {% endif %}
+                            <a class="sspBold14" href="{{ h.url_for('hdx_org.read', id=organization.name, sort='metadata_modified desc')}}">{{ num_of_pack }} {% if num_of_pack != 1 %}{{ _('Datasets') }}{% else %}{{ _('Dataset') }}{% endif %}</a>
+                          {% else %}
+                            {{ _('0 Datasets') }}
+                          {% endif %}
+                        </span>
+                        -
+                        <span class="sspBold14" data-module="bs_tooltip" data-module-placement="top"
+                              data-toggle="tooltip" data-original-title="{{ _('Total archived public datasets') }}">
+                        {% if organization.archived_package_count %}
+                          {% set num_of_pack = organization.archived_package_count %}
+                            <a class="sspBold14" href="{{ h.url_for('hdx_org.read', id=organization.name, sort='metadata_modified desc', ext_archived=1)}}">{{ num_of_pack }} {% if num_of_pack != 1 %}{{ _('Archived Datasets') }}{% else %}{{ _('Archived Dataset') }}{% endif %}</a>
+                        {% else %}
+                          {{ _('0 Archived Datasets') }}
+                        {% endif %}
+                        </span>
+                        -
+                        {% if g.user %}
+                          {% set group_members_url = h.url_for(controller='organization', action='members', id=organization.name or organization.title, sort='metadata_modified desc') %}
+                          <a class="sspBold14" href="{{ group_members_url }}">{{ h.hdx_show_singular_plural(members, _('Member'), _('Members')) }}</a>
+                        {% else %}
+                          <span class="sspBold14">{{ h.hdx_show_singular_plural(members, _('Member'), _('Members')) }}</span>
+                        {% endif %}
+                        -
+                        <span class="sspBold14">{{ followers }} {% if followers != 1 %}{{ _('Followers') }}{% else %}{{ _('Follower') }}{% endif %}</span>
+                    {% endblock %}
+                </div>
+
+                <div class="dataset-updated">
+                    {% block updated %}
+                        Member since {{f_updated_time}}
+                    {% endblock %}
+                </div>
+            </span>
+        </div>
+        <div class="col-xs-12 col-md-6">
+            <div class="dataset-description">
+                {% block description %}
+                    {% if organization.description %}
+                    <div class="list-items content">{% set notes = h.markdown_extract(organization.description, extract_length=0) %}
+                        {% if notes %}
+                            <span data-module="hdx_show_more" style="visibility:hidden"><div>{{ notes|urlize }}</div></span>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                        <div class="list-items content empty">{{ _('This organization has no description') }}</div>
+                    {% endif %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</li>

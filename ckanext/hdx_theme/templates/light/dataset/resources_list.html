@@ -1,0 +1,40 @@
+{#
+Renders a list of resources with icons and view links.
+
+resources - A list of resources to render
+pkg - A package object that the resources belong to.
+
+Example:
+
+  {% snippet "package/snippets/resources_list.html", pkg=pkg, resources=pkg.resources %}
+
+#}
+{% import 'macros/form.html' as form %}
+
+{#{% resource 'hdx_theme/requestdata/modal-form.js' %}#}
+{#{% resource 'requestdata/css/main.css' %}#}
+{#{% resource 'hdx_theme/bs_tooltip.js' %}#}
+
+{% asset 'requestdata/main-styles' %}
+{% asset 'hdx_theme/requestdata-scripts' %}
+
+<div id="dataset-resources">
+  <div class="requested-data-message"></div>
+  {% block resource_list %}
+    {% if resources %}
+      <ul class="{% block resource_list_class %}hdx-bs3 resource-list{% endblock %}">
+        {% block resource_list_inner %}
+          {{ h.snippet('widget/onboarding/data-use-survey.html', id="dataUseSurveyPopup", pkg=pkg) }}
+          {% for resource in resources %}
+            {% snippet 'light/dataset/resource_item.html', pkg=pkg, res=resource, user_survey_url=user_survey_url %}
+          {% endfor %}
+        {% endblock %}
+      </ul>
+    {% else %}
+      <div class="tab-pane-background">
+        {% snippet 'light/dataset/resource_req_item.html', pkg=pkg, res=resource %}
+      </div>
+    {% endif %}
+
+    {% endblock %}
+</div>

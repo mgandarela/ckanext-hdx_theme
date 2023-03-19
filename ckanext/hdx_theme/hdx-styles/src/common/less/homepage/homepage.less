@@ -1,0 +1,309 @@
+@import "../base/variables";
+@import "../base/mixins";
+@import "homepage-carousel";
+@import "form-search";
+@import "_variables";
+@import "_tools";
+
+/* Homepage */
+
+.homepage-main {
+  //background-color: @whiteColor;
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  font-family: @gothamBoldFont;
+  font-weight: 400;
+  position: relative; //used by #hdx-warning
+
+
+  .homepage-section {
+    .section-content {
+      //padding: 40px 100px;
+      padding-bottom: 0;
+      max-width: 930px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .section-title {
+      .gothamMediumFont(48px);
+      color: white;
+      text-align: center;
+      line-height: 1.05;
+      margin-top: 60px;
+      margin-bottom: 30px;
+      //margin: 0;/
+
+      .dotted {
+        text-decoration: underline dotted;
+      }
+    }
+    .section-description {
+      .sourceSansProFont(400, 18px);
+      max-width: 580px;
+      text-align: center;
+      color: @whiteColor;
+      line-height: 1.5;
+
+      strong {
+        color: @orangeColor;
+        text-decoration: underline dotted;
+      }
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+    }
+
+  }
+
+
+  .hero-section{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: @greenColor;
+    padding-top: 50px;
+
+    .btn-faq {
+      .gothamBoldFont(14px);
+      color: @greenColor;
+      width: 153px;
+      line-height: 36px; //without 2*border of 1px
+      background-color: @whiteColor;
+      padding: 0;
+    }
+
+    .container {
+      display: block;
+    }
+
+    .hero-section-content {
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-description {
+      color: @whiteColor;
+      flex-basis: 50%;
+      text-align: left;
+      .sourceSansProFont(400, 18px);
+
+      .section-title {
+        text-align: left;
+        width: 440px;
+      }
+    }
+
+    .hero-boxes {
+      display: flex;
+      flex-direction: column;
+      flex-basis: 50%;
+      align-items: flex-end;
+      flex-shrink: 1;
+
+      @searchBoxPadding: 20px;
+      @searchBoxRadius: 6px;
+      @searchBoxSize: 405px; //size of the actual search box inside the whole widget
+      .action-box {
+        width: @searchBoxSize + 2*@searchBoxPadding;
+        min-height: 200px; //actual content will enlarge/shrink
+        background-color: @extraLightGrayColor;
+        border-radius: @searchBoxRadius;
+        overflow: hidden;
+
+        ~ .action-box {
+          margin-top: 20px;
+        }
+
+        .box-header {
+          background-color: @whiteColor;
+          border-top-left-radius: @searchBoxRadius;
+          border-top-right-radius: @searchBoxRadius;
+          padding: @searchBoxPadding;
+
+          color: @blueColor;
+          font-size: 16px;
+          text-transform: uppercase;
+          line-height: 1;
+
+          &.orange {
+            color: @orangeColor;
+          }
+        }
+
+        .first-search {
+          padding: @searchBoxPadding;
+          .form-search{
+            position: relative;
+            .search-ahead {
+              width: 125%;
+              .sourceSansProFont(400, 18px);
+
+            }
+            @media(max-width: 767px) {
+              .search-ahead {
+                width: 100%;
+              }
+            }
+
+            .input-append .searchInput{
+              //width: @searchBoxSize - 50px; //50px is the button size, can't refactor at this point
+              width: 100%;
+              padding-right: 50px;
+            }
+          }
+        }
+
+        .count-items {
+          text-align: center;
+          padding: 0 @searchBoxPadding @searchBoxPadding;
+
+          .col-xs-4 {
+            border-right: 1px solid @lightGrayColor;
+            &:last-child {
+              border-right: none;
+            }
+          }
+
+          .item-count a{
+            .gothamLightFont(34px);
+            color: @grayColor;
+            line-height: 1;
+            &:focus, &:hover {
+              text-decoration: none;
+              color: @grayColor;
+            }
+          }
+
+          .item-name{
+            .gothamLightFont(12px);
+            text-transform: uppercase;
+          }
+        }
+
+        .add-data-actions {
+          display: flex;
+          justify-content: space-between;
+
+          .add-data-item {
+            margin: 20px;
+            cursor: pointer;
+
+            .add-data-item-content {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+
+              img {
+                height: 50px;
+              }
+
+              .description {
+                //width: 160px;
+                margin: 5px 0;
+                .sourceSansProFont(400, 14px);
+                text-align: center;
+
+                color: @grayColor;
+              }
+
+              .action {
+                color: @orangeColor;
+                text-transform: uppercase;
+              }
+            }
+          }
+        }
+        .add-data-footer {
+          background-color: @orangeColor;
+          padding: 10px 15px;
+          .sourceSansProFont(400, 14px);
+          color: @extraLightGrayColor;
+          a {
+            &, &:focus, &:hover {
+              color: @extraLightGrayColor;
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+
+    }
+  }
+
+  .carousel-section {
+    background-color: @greenColor;
+    padding-bottom: 41px;
+
+    .carousel-title {
+      margin-top: 40px;
+      margin-bottom: 30px;
+      text-align: center;
+      color: @whiteColor;
+      .gothamBookFont(24px);
+    }
+    .homepage-carousel();
+  }
+
+
+  .learn-section {
+    background-color: @darkGrayColor;
+
+    .learn-photo {
+      margin-top: 40px;
+      position: relative;
+
+      img {
+        max-height: 250px;
+        max-width: 100%;
+      }
+
+      .btn-learn {
+        position: absolute;
+        background-color: @orangeColor;
+        padding: 12px 30px;
+        border-radius: 6px;
+        font-size: 14px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        .humanitarianicons-Out-of-platform {
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+
+  .presentation-modal.in {
+    .modal-dialog {
+      .close {
+        position: absolute;
+        right: -30px;
+        top: -40px;
+        font-size: 40px;
+        opacity: 1;
+        color: white;
+      }
+      .modal-content {
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        min-height: auto;
+        min-width: auto;
+        height: 560px;
+      }
+    }
+  }
+}
+
+.homepageHeaderFooterBackground{
+  background-color: #ffffff;
+  /*min-width: 1382px;*/
+}
+/* END Homepage */
+
+@import "_footer";

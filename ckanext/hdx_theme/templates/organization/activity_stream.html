@@ -1,0 +1,21 @@
+{% extends "organization/read.html" %}
+
+
+{% block styles %}
+	{{ super() }}
+  {% asset 'hdx_theme/activity-stream-styles' %}
+{% endblock %}
+
+{% block subtitle %}{{ _('Activity Stream') }} - {{ org_dict.title or org_dict.name }}{% endblock %}
+
+{% block primary_content_inner %}
+	<h2 class="hide-heading">{% block page_heading %}{{ _('Activity Stream') }}{% endblock %}</h2>
+	{% block activity_stream %}
+	{% snippet 'snippets/activity_stream.html', activity_stream=group_activity_stream, id=org_dict.id, object_type='organization' %}
+	{% endblock %}
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {% asset 'hdx_theme/base-dashboard-scripts' %}
+{% endblock %}

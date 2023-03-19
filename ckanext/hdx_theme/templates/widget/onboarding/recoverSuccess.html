@@ -1,0 +1,22 @@
+{#
+Verify email widget
+
+Depends on:
+    Fanstatic resource bundle "popup"
+
+Example:
+    {{ h.snippet('widget/onboarding/verify.html', id="recoverSuccessPopup") }}
+#}
+{% set class = "popup-onboarding" %}
+{% set title = "Please check your email" %}
+
+{% extends "widget/onboarding/notification.html" %}
+
+{% block notification_content %}
+    <div class="verify-widget">
+        <div class="center">
+            <img class="gif mTop45 lazyload" data-src="/images/onboarding/incomingmail.gif">
+            <div class="notification-message mTop20">Email was sent if the username or <br/>email address matched in our system.</div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+
+{%- block styles %}
+  {{ super() }}
+  {% asset 'hdx_theme/page-styles' %}
+  {% if c.userobj %}
+    {% asset 'hdx_theme/onboarding-bulk-user-styles' %}
+  {% else %}
+    {% asset 'hdx_theme/onboarding-bulk-anon-styles' %}
+  {% endif %}
+{% endblock %}
+
+{%- block page -%}
+
+  {#
+  Override the header on a page by page basis by extending this block. If
+  making sitewide header changes it is preferable to override the header.html
+  file.
+  #}
+  {%- block header %}
+    {% if data %}
+      {% set step = data.current_step %}
+      {% if step == "hdx_login" %}
+        <div id="user-login" style="display: none;">User login</div>
+        {% if not data.success %}
+          <div id="login-error" style="display: none;">{{ data.message }}</div>
+        {% endif %}
+        {% if data.info_message %}
+          <div id="login-info" style="display: none;">{{ data.info_message }}</div>
+        {% endif %}
+      {% endif %}
+      {% if step == "hdx_logout" %}
+        <div id="user-logout" style="display: none;">{{data.message}}</div>
+      {% endif %}
+      {% if step == "hdx_register" %}
+        <div id="user-register" style="display: none;">User Register</div>
+      {% endif %}
+    {% endif %}
+
+    {% if c.userobj %}
+      {% set data = h.get_user_extra(c.userobj.id) %}
+      {% if data is not string %}
+        {% set step = data.data.current_step %}
+      {% else %}
+        {% set step = 'hdx_onboarding_details' %}
+      {% endif %}
+      {% if step %}
+        {{ h.snippet('widget/onboarding/registered.html', id="registeredPopup") }}
+        {{ h.snippet('widget/onboarding/follow.html', id="followPopup") }}
+        {{ h.snippet('widget/onboarding/invite.html', id="invitePopup") }}
+        {{ h.snippet('widget/onboarding/done.html', id="donePopup") }}
+        {{ h.snippet('widget/onboarding/select-organisation.html', id="selectOrgPopup") }}
+      {% endif %}
+      {{ h.snippet('widget/contribute/details.html', id="addDataPopup") }}
+    {% else %}
+      {{ h.snippet('widget/onboarding/logout.html', id="logoutPopup") }}
+      {{ h.snippet('widget/onboarding/login.html', id="loginPopup") }}
+      {{ h.snippet('widget/onboarding/signup.html', id="signupPopup") }}
+      {{ h.snippet('widget/onboarding/verify.html', id="verifyPopup") }}
+    {% endif %}
+    {{ h.snippet('widget/onboarding/survey.html', id="surveyPopup") }}
+
+    {% block header_core scoped %}
+      {# Override this block as in the homepage section to get the fullwidth header #}
+      <div class="container">
+        <div class="paddingRowHack">
+          {% snippet "header-mobile.html", page_has_mobile_version=(page_has_mobile_version or False), step=step %}
+        </div>
+      </div>
+    {%  endblock %}
+  {% endblock -%}
+
+  {# The content block allows you to replace the content of the page if needed #}
+    {%- block content %}
+      {% block maintag %}<div role="main">{% endblock %}
+        <div id="content" class="container">
+          {% block main_content %}
+            {% block toolbar %}
+              <div class="container">
+                <div class="row paddingRowHack toolbarRow">
+                  <div class="col-xs-12 paddingLeftHack paddingRightHack">
+                    <div class="pull-left">
+                      <div class="toolbar">
+                        {% block breadcrumb %}
+                          {% if self.breadcrumb_content() | trim %}
+                            <ol class="breadcrumb" vocab="https://schema.org/" typeof="BreadcrumbList">
+                              {% snippet 'snippets/home_breadcrumb_item.html' %}
+                              {% block breadcrumb_content %}{% endblock %}
+                            </ol>
+                          {% endif %}
+                        {% endblock %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endblock %}
+            {% block flash %}
+              {% set flash_messages = h.flash.pop_messages() | list %}
+              <div class="paddingRowHack">
+                {% if flash_messages|length > 0 %}
+                <div class="flash-messages paddingLeftHack paddingRightHack">
+                  {% for message in flash_messages %}
+                    <div class="alert fade in {{ message.category }}">
+                      {{ h.literal(message) }}
+                    </div>
+                  {% endfor %}
+                  <div style="clear: both"></div>
+                </div>
+                <div style="clear: both"></div>
+                {% endif %}
+              </div>
+            {% endblock %}
+
+            <div class="container mainContent">
+              {% set secondary_block_output = self.secondary() %}
+              <div class="hdx-wrapper wrapper{% block wrapper_class %}{% endblock %}{% if secondary_block_output|trim == '' %} no-nav{% endif %}">
+                {#
+                The pre_primary block can be used to add content to before the
+                rendering of the main content columns of the page.
+                #}
+                {% if self.pre_primary() | trim %}
+                  <div class="row paddingRowHack contentBackground">
+                    <div class="col-xs-12 paddingLeftHack paddingRightHack">
+                      {% block pre_primary %}
+                      {% endblock %}
+                    </div>
+                  </div>
+                {% endif %}
+
+                <div class="row paddingRowHack contentBackground{% if secondary_block_output|trim != '' and not secondary_right_side %} twoColumnBackground{% endif %}">
+                  <div class="col-xs-12 paddingLeftHack paddingRightHack">
+                    <div class="row">
+                      {% if secondary_block_output|trim != '' and not secondary_right_side %}
+                        <div class="col-xs-3 wrapper-secondary">
+                          {{ secondary_block_output }}
+                        </div>
+                      {% endif %}
+                      <div class="{% if secondary_block_output|trim != '' %} col-xs-9 wrapper-primary pL15{% else %} col-xs-12 {% endif %}">
+                        {{ self.primary() }}
+                      </div>
+                      {% if secondary_block_output|trim != '' and secondary_right_side %}
+                        <div class="col-xs-3">
+                          {{ secondary_block_output }}
+                        </div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+
+                {% block post_primary %}
+                {% endblock %}
+
+              </div>
+            </div>
+
+          {% endblock %}
+        </div>
+      </div>
+    {% endblock -%}
+
+  {#
+  Override the footer on a page by page basis by extending this block. If
+  making sitewide header changes it is preferable to override the footer.html-u
+  file.
+  #}
+  {%- block footer %}
+    {% include "footer.html" %}
+  {% endblock -%}
+{%- endblock -%}
+
+{% block secondary %}
+  <div class="secondary">
+    {% block secondary_content %}{% endblock %}
+  </div>
+{% endblock %}
+
+{% block primary %}
+  <div class="primary">
+    {% block primary_content %}
+      <article class="module">
+        {% block item_title_contrib %}
+        {% endblock %}
+
+        {% block page_header %}
+          <div class="paddingLeftHack">
+            <header class="module-content page-header paddingRowHack mBottom10">
+              <div class="paddingLeftHack">
+                <ul class="nav nav-tabs paddingRightHack">
+                  {% block content_primary_nav %}{% endblock %}
+                </ul>
+              </div>
+            </header>
+          </div>
+          {% if self.content_action() | trim %}
+            <div class="content_action">
+                {% block content_action %}{% endblock %}
+            </div>
+          {% endif %}
+        {% endblock %}
+        <div class="module-content {% block primary_content_module_margin %} mTop45 {% endblock %}">
+          {% if self.page_primary_action() | trim %}
+            <div class="page_primary_action">
+              {% block page_primary_action %}{% endblock %}
+            </div>
+          {% endif %}
+          {% block primary_content_inner_wrapper %}
+            {% block primary_content_inner %}
+            {% endblock %}
+          {% endblock %}
+        </div>
+      </article>
+    {% endblock %}
+  </div>
+{% endblock %}
+
+{%- block scripts %}
+  {# Keep this block to a minimum, use resource.config instead #}
+
+  {% asset 'hdx_theme/page-scripts' %}
+{#  {% if g.tracking_enabled %}#}
+{#      {% resource 'hdx_theme/package/tracking.js' %}#}
+{#  {% endif %}#}
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  {{ super() }}
+  {% asset 'hdx_theme/search-scripts' %}
+  {% if c.userobj %}
+    {% set data = h.get_user_extra(c.userobj.id) %}
+    {% if data is not string %}
+      {% set step = data.data.current_step %}
+    {% else %}
+      {% set step = 'hdx_onboarding_details' %}
+    {% endif %}
+    {% asset 'hdx_theme/onboarding-bulk-user-scripts' %}
+    {% if step %}
+      {% asset 'hdx_theme/onboarding-bulk-user-complete-onboarding-scripts' %}
+    {% endif %}
+  {% else %}
+    {% asset 'hdx_theme/onboarding-bulk-anon-scripts' %}
+  {% endif %}
+{% endblock -%}

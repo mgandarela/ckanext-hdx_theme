@@ -1,0 +1,154 @@
+{#
+Displays a list of datasets.
+
+packages       - A list of packages to display.
+list_class     - The class name for the list item.
+item_class     - The class name to use on each item.
+hide_resources - If true hides the resources (default: false).
+banner         - If true displays a popular banner (default: false).
+truncate       - The length to trucate the description to (default: 180)
+truncate_title - The length to truncate the title to (default: 80).
+
+Example:
+
+{{ h.snippet('search/snippets/package_list.html',
+                query=my_c.q, packages=my_c.page.items, packages_count=my_c.page.item_count,
+                full_facet_info=my_c.full_facet_info,
+                ext_page_size=my_c.ext_page_size, sorting_selected=my_c.sort_by_selected,
+                other_links=my_c.other_links, display_min=display_min) }}
+
+#}
+{#{% resource 'hdx_theme/dataset-search' %}#}
+{#{% resource 'hdx_theme/dataset' %}#}
+{#{% resource 'hdx_theme/jquery.highlight' %}#}
+{% asset 'hdx_theme/dataset-search-scripts' %}
+
+
+{% set min_version = full_facet_info.get("filters_selected") or full_facet_info.get("query_selected") if "filters_selected" in full_facet_info or "query_selected" in full_facet_info %}
+
+{% set searchValue = h.hdx_get_request_param('q', '') %}
+
+<div style="display: none;" id="analytics-number-of-results">{{packages_count}}</div>
+{%  set current_page_url = other_links.get('current_page_url') if 'current_page_url' in other_links else '' %}
+<form id="dataset-filter-form" style="display: inline;">
+
+    <div id="base-filter-location" style="display: none;">{{current_page_url}}</div>
+    <div id="dataset-filter-start" class="list-header {% if display_min and not min_version %}list-header-min{% endif %}">
+        <span class="mL15 list-header-title">{{ _("Data") }}
+          {% snippet 'search/snippets/archived_tabs.html', archived_url_helper=full_facet_info.archived_url_helper %}
+        </span>
+          <span class="mL30">
+
+              <input autocomplete="off" id="headerSearch" name="q" class="header-search" type="text" placeholder="Search all datasets ..." value="{{searchValue}}">
+          </span>
+          <span class="mL20 list-header-showall filter-hide-show uppercase">
+              Show filter:
+
+              <span>
+                <span class="checkbox-slider" style="display: inline-block; top: 5px; left: -7px;">
+                  <input id="show-filter-toggle" type="checkbox" class="checkbox-slider-checkbox" checked="checked"/>
+                  <label class="checkbox-slider-label" for="show-filter-toggle">
+                    <span class="checkbox-slider-inner"></span>
+                    <span class="checkbox-slider-switch"></span>
+                  </label>
+                </span>
+
+              </span>
+          </span>
+          {% snippet 'search/snippets/package_search_order.html', sort_param = sorting_selected, admin_view=admin_view, used_default_sort_by=c.used_default_sort_by %}
+
+          {% set limits = [25, 50, 100] %}
+          {% set limit_param = ext_page_size %}
+          {% set limit_selected = limit_param if limit_param else 25 %}
+          <div class="list-header-showall filter-pagination control-order-by control-items-per-page">
+            <label for="field-order-by" class="uppercase">{{ _('Show') }}</label>
+            <div class="dropdown orderDropdown">
+               <a class="dropdown-toggle sspBold16" data-toggle="dropdown" style="background-color: transparent;">
+                <span class="dropdown-toggle-text">
+                  {% for value in limits %}
+                    {% if limit_selected|int == value %} {{ value }} {% endif %}
+                  {% endfor %}
+                </span>
+                <i class="humanitarianicons-Down"></i>
+               </a>
+              <ul class="dropdown-menu dropdown-inverse" role="menu" style="max-height: 241px; overflow-y: auto;">
+                {% for value in limits %}
+                  <li>
+                    <input id="ext_page_size_{{value}}" type="radio" name="ext_page_size" value="{{value}}" {% if limit_selected|int == value %}checked{% endif %}><label for="ext_page_size_{{value}}">{{value}}</label>
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+
+    </div>
+</form>
+
+<div class="row">
+    <form id="search-page-filters-form" autocomplete="off">
+    <div id="search-page-filters" class="col-xs-3">
+        <div class="filter-title">
+            Refine your search: <a href="{{current_page_url}}" class="filter-clear pull-right">Clear all</a>
+        </div>
+
+        {% set facet_list = full_facet_info.get('facets') %}
+        {% snippet 'search/snippets/package_search_facets.html', facet_list=facet_list  %}
+    </div>
+        {% set ext_after_metadata_modified = h.hdx_get_request_param('ext_after_metadata_modified', None) %}
+        {%  if ext_after_metadata_modified %}
+            <input id="ext_after_metadata_modified" type="hidden" name="ext_after_metadata_modified" value="{{ ext_after_metadata_modified }}"/>
+        {% endif %}
+        {% set ext_batch = h.hdx_get_request_param('ext_batch', None) %}
+        {% if ext_batch %}
+            <input id="ext_batch" type="hidden" name="ext_batch" value="{{ ext_batch }}"/>
+        {% endif %}
+    </form>
+    <div id="search-page-results" class="col-xs-9">
+        {% if packages %}
+            <div class="search-list">
+                {% block search_list %}
+                <ul class="hdx-bs3 list-items {{ list_class or 'dataset-list unstyled' }}">
+
+                    {% if admin_view %}
+                      <li class="list-items dataset-item ">
+                        <div class="dataset-pre-content">
+                          <div class="list-items dataset-content">
+                            <div class="row">
+                              <div class="col-xs-6">
+                              </div>
+                              <div class="col-xs-6">
+                                <div class="row">
+                                  <div class="col-xs-6">Expected dataset update:</div>
+                                  <div class="col-xs-6">Actions:</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    {% endif %}
+
+                    {% block package %}
+                      {% for package in packages %}
+                        {% set package_item_snippet = 'search/snippets/package_item.html' %}
+                        {% if admin_view %}
+                          {% set package_item_snippet = 'search/snippets/package_item_admin.html' %}
+                        {% endif %}
+                        {% snippet package_item_snippet, query=query, package=package, item_class=item_class, hide_resources=hide_resources, banner=banner, truncate=truncate, truncate_title=truncate_title, show_my_links=show_my_links, show_edit_link=show_edit_link, loop=loop %}
+                      {% endfor %}
+                    {% endblock %}
+                </ul>
+                {% endblock %}
+            </div>
+        {% else %}
+            <div class="list-items search-form">
+                {% set src_msg = 'for \"'+ searchValue +'\"' if searchValue else ''  %}
+                <form id="dataset-filter-form" style="display: none;">
+                    <input name="q" type="hidden" value="{{searchValue}}">
+                </form>
+                <h2>Sorry no datasets found for current filter selection {# and {{src_msg}} #}</h2>
+            </div>
+        {% endif %}
+    </div>
+</div>
+

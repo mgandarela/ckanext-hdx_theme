@@ -1,0 +1,65 @@
+@import "../../base/mixins";
+@import "../../base/variables";
+@import "onboarding-variables";
+
+@widgetHeight: @baseHeight;
+.two-column-select-organisation {
+  .two-column-left {
+    height: @widgetHeight;
+
+    .regular-text {
+      color: @lightGrayColor;
+    }
+    .star-text{
+        color: red;
+    }
+    .star-box{
+        background-color: #eeeeee;
+        padding: 10px;
+        border-radius: 5px;
+    }
+  }
+
+  .two-column-right {
+    height: @widgetHeight;
+    padding: @paddingLarge;
+
+    #create-organisation {
+      overflow: scroll;
+      height: 400px;
+    }
+
+    @textAreaHeight: 120px;
+
+    #org-description {
+      height: @textAreaHeight;
+      padding: 14px @paddingSmall;
+      & ~ label{
+        bottom: @textAreaHeight - @inputHeight;
+      }
+      &.input-content ~ label {
+        bottom: 6px;
+      }
+
+    }
+    #org-description-data {
+      height: @textAreaHeight;
+      padding: 14px @paddingSmall;
+      & ~ label{
+        bottom: @textAreaHeight - @inputHeight;
+      }
+      &.input-content ~ label {
+        bottom: 6px;
+      }
+    }
+  }
+}
+
+@media (max-width: @cut-point-mobile-l) {
+  .two-column-widget.two-column-select-organisation {
+    .two-column-left, .two-column-right {
+      padding: @paddingNormal;
+    }
+  }
+}
+

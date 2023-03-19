@@ -1,0 +1,54 @@
+@import "../../base/mixins";
+@import "../../base/variables";
+@import "onboarding-variables";
+
+.two-column-widget {
+  width: 2*@bigColumnWidth;
+
+  .two-column-left {
+    background-color: @blueColor;
+    background-image: url('/images/backgrounds/pixels_white.png');
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    background-size: 200%;
+    color: @whiteColor;
+
+    padding: @paddingLarge;
+  }
+
+  .two-column-right {
+    position: relative;
+    background-color: @extraLightGrayColor;
+
+    .right-side-actions{
+      position: absolute;
+      right: @paddingNormal;
+      bottom: @paddingNormal;
+    }
+  }
+}
+
+@media (max-width: @cut-point-laptop-s) {
+  .two-column-widget {
+    min-width: @cut-point-tablet;
+    width: 100%;
+  }
+}
+
+@media (max-width: @cut-point-tablet) {
+  .two-column-widget {
+    min-width: unset;
+    width: 100vw;
+    height: 100vh;
+    overflow: scroll;
+  }
+}
+
+@media (max-width: @cut-point-mobile-l) {
+  .two-column-widget {
+    .two-column-left, .two-column-right {
+      padding: @paddingNormal;
+    }
+  }
+
+}

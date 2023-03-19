@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block page %}
+    <div style="position: relative;">
+    {% block crisis_map %}
+        <div id="map-configuration" style="display: none">{{ h.dump_json(map) }}</div>
+        <div id="mapbox-baselayer-url-div"
+             style="display: none;">{{ h.hdx_get_ckan_config('hdx.mapbox.baselayer.url') }}</div>
+        <div id="crisis-map" style="position: relative; z-index: 0;">
+        </div>
+    {% endblock %}
+    </div>
+
+{#    {% resource 'hdx_theme/base/fonts.css' %}#}
+{#    {% resource 'hdx_theme/crisis-base' %}#}
+{#    {% resource 'hdx_theme/leaflet' %}#}
+{#    {% resource 'hdx_theme/country-custom' %}#}
+
+    {% asset 'hdx_theme/base-font-styles' %}
+    {% asset 'hdx_theme/charting-scripts' %}
+    {% asset 'hdx_theme/crisis-base-scripts' %}
+    {% asset 'hdx_theme/country-custom-styles' %}
+    {% asset 'hdx_theme/country-custom-scripts' %}
+{% endblock %}

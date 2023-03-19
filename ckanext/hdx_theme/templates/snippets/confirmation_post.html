@@ -1,0 +1,49 @@
+{#
+Example:
+
+  {% snippet 'snippets/confirmation_post.html', form_url=form_url, modal_div_id='confirmation-div',
+  		header='Confirm', body="message", confirm_btn_label='Confirm' %}
+
+#}
+
+{% import 'macros/form.html' as form %}
+
+{% asset 'hdx_theme/delete-member-styles' %}
+
+  <div id="{{ modal_div_id }}" class="modal confirmation-modal" tabindex="-1" role="dialog" aria-labelledby="{{ modal_div_id }}-label" aria-hidden="true">
+	<form class="dataset-form form-horizontal" method='post' action="{{ form_url }}">
+		<div class="modal-dialog">
+		<div class="modal-content hdx-modal">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h3 class="modal-title" id="{{ modal_div_id }}-label">
+					{% if header %}
+						{{ header }}
+					{% else %}
+						{{ _('Please confirm action') }}
+					{% endif %}
+				</h3>
+			</div>
+			<div class="modal-body">
+				<div class="hdx-modal-text-body">
+          {% block body %}
+            {{ body }}
+          {% endblock %}
+        </div>
+			</div>
+			<div class="modal-footer">
+        {% block footer %}
+          <button class="btn btn-empty btn-large" data-dismiss="modal" aria-hidden="true">{{ _('Cancel') }}</button>
+          <button class="btn btn-danger btn-large">
+            {% if header %}
+              {{ confirm_btn_label }}
+            {% else %}
+              {{ _('Confirm')  }}
+            {% endif %}
+          </button>
+        {% endblock %}
+			</div>
+		</div>
+		</div>
+	</form>
+  </div>
